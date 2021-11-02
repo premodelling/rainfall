@@ -1,0 +1,68 @@
+---
+title: "Rainfall"
+author: Group B3
+date: 02/11/2021
+output: pdf_document
+---
+
+
+```{r include = FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+```{r include = FALSE}
+library(tidyverse)
+library(ggplot2)
+```
+```{r include = FALSE}
+sys.source('R/functions/GetData.R', envir = knitr::knit_global())
+X <- GetData()
+readings <- X$readings
+stations <- X$stations
+rm(X)
+```
+
+Read-in averages
+```{r include = FALSE}
+sys.source('R/functions/RainfallAverages.R', envir = knitr::knit_global())
+averages <- RainfallAverages(data = readings)
+str(averages)
+```
+```{r include = FALSE}
+sys.source('R/functions/RainfallWettest.R', envir = knitr::knit_global())
+wettest <- RainfallWettest(data = averages)
+wettest
+```
+
+
+### Rainfall graphs
+
+The line graph of dates and mean rainfall ...
+```{r}
+plot(x = averages$date, y = averages$mean_rainfall_month,
+     type = 'l', frame.plot = FALSE, xlab = 'Date', ylab = 'Mean Rainfall per Month')
+```
+
+The matrix of rainfall by month and year
+
+```{r}
+ggplot(data = averages) +
+  geom_raster(mapping = aes(x = year, y = month, fill = mean_rainfall_month )) +
+  theme_minimal()
+```
+
+The bar graph
+```{r}
+ggplot(data = wettest) +
+  geom_bar(mapping = aes(x = month, y = mean), stat = 'identity') +
+  theme_minimal() +
+  theme(axis.text.x = element_text(size = 11, angle = 45),
+        axis.text.y = element_text(face = "bold", size = 11),
+        axis.title.y = element_text(size = 13),
+        aspect.ratio = 0.65) +
+  ylab(label = 'Mean Rainfall\n') +
+  xlab(label = '')
+```
+
+
+
