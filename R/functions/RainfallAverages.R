@@ -1,5 +1,5 @@
 # Title     : Rainfall Averages
-# Objective : ...
+# Objective : The average rainfall per date w.r.t. stations across Lancaster
 # Created by: Think
 # Created on: 02/11/2021
 
