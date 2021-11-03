@@ -7,9 +7,7 @@
 
 <br>
 
-**Group B3 Rainfall Project**
-
-Thus far:
+The *Group B3 Rainfall Project* thus far:
 
 * Within the parent directory
   * a [rmarkdown based report](./rainfall.rmd) in development
