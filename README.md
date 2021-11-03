@@ -6,6 +6,19 @@
 * [Independent Development Environment](#independent-development-environments)
 
 <br>
+
+**Group B3 Rainfall Project**
+
+Thus far:
+
+* Within the parent directory
+  * a [rmarkdown based report](./rainfall.rmd) in development
+  
+* Within directory [R](./R)
+  * a [play area](./R/rainfall.R) were we explore ideas
+  * a [directory of functions](./R/functions), which are used by the rmarkdown report  
+  
+<br>
 <br>
 
 ### References
