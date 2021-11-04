@@ -22,12 +22,17 @@ stations <- X$stations
 rm(X)
 ```
 
-Read-in averages
+### Data Aggregations
+
+1. Averages
 ```{r include = FALSE}
 sys.source('R/functions/RainfallAverages.R', envir = knitr::knit_global())
 averages <- RainfallAverages(data = readings)
 str(averages)
 ```
+
+
+2. The wettest by ...
 ```{r include = FALSE}
 sys.source('R/functions/RainfallWettest.R', envir = knitr::knit_global())
 wettest <- RainfallWettest(data = averages)
@@ -35,7 +40,18 @@ wettest
 ```
 
 
-### Rainfall graphs
+3. Extremes
+```{r include = FALSE}
+sys.source('R/functions/RainfallExtremes.R', envir = knitr::knit_global())
+extremes <- RainfallExtremes(data = readings)
+```
+
+
+
+
+
+
+### Rainfall Graphs
 
 The line graph of dates and mean rainfall ...
 ```{r}
@@ -63,6 +79,58 @@ ggplot(data = wettest) +
   ylab(label = 'Mean Rainfall\n') +
   xlab(label = '')
 ```
+
+
+### Extreme Tables
+
+
+The highest individual readings ...
+```{r include = FALSE}
+sys.source('R/functions/HighestIndividualReadings.R', envir = knitr::knit_global())
+HighestIndividualReadings(readings = readings, stations = stations)
+```
+
+
+
+Highest and lowest annual station records
+```{r include = FALSE}
+sys.source('R/functions/HLAS.R', envir = knitr::knit_global())
+hlas <- HLAS(extremes = extremes, stations = stations)
+```
+
+Highest:
+```{r}
+hlas$highest
+```
+
+Lowest:
+```{r}
+hlas$lowest
+```
+
+
+
+Tally of the wettest months
+
+```{r include = FALSE}
+sys.source('R/functions/WettestMonthTallies.R', envir = knitr::knit_global())
+WettestMonthTallies(readings = readings)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
