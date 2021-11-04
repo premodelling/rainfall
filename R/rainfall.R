@@ -60,6 +60,55 @@ barplot(wettest$mean, names.arg = wettest$month, col = 'black', las = 2,
 
 
 
+#' Part 2
+#' Extreme Tables
+
+# Highest Individual Readings
+expanded <- left_join(x = readings, y = stations, by = 'stationID', keep = FALSE)
+expanded_ <- expanded[order(-expanded$rain), ]
+expanded_ %>%
+  tibble()
+head(expanded_, n = 5)
+
+
+# H & L Annual Stations
+extremes_ <- left_join(x = extremes, y = stations[, c('stationID', 'name')], by = 'stationID', keep = FALSE)
+extremes_ <- extremes_[order(-extremes_$total), ]
+head(extremes_, n = 5)
+
+lowest_set <- tail(extremes_, n = 5) %>%
+  arrange(total)
+lowest_set
+
+
+# Wettest Month Records / Tallies
+# split - probably the best
+baseline <- readings %>%
+  group_by(year, month) %>%
+  summarise(total_rainfall = sum(rain), .groups = 'drop')
+
+ordered_baseline <- baseline[with(baseline, order(year, -total_rainfall)), ]
+
+indices <- !duplicated(ordered_baseline$year)
+wettest_months_per_year <- ordered_baseline[indices, ]
+
+wettest_months_per_year %>%
+  group_by(month) %>%
+  summarise(N = n())
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
