@@ -81,6 +81,8 @@ ggplot(data = wettest) +
 ```
 
 
+\pagebreak
+
 ### Extreme Tables
 
 
@@ -114,6 +116,12 @@ Tally of the wettest months
 
 ```{r include = FALSE}
 sys.source('R/functions/WettestMonthTallies.R', envir = knitr::knit_global())
+
+```
+
+
+Wettest:
+```{r}
 WettestMonthTallies(readings = readings)
 ```
 
