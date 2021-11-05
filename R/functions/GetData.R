@@ -3,7 +3,6 @@
 # Created by: Think
 # Created on: 02/11/2021
 
-
 #' Get Data
 #'
 #' Reads the (a) rainfall readings data file, and (b) the weather stations data file.  The
@@ -12,7 +11,8 @@
 #' @return A named list of 2 dataframes: (1) 'readings' = readings (2) 'stations' = stations
 GetData <- function() {
 
-  # \strong{Rainfall}
+
+  # **Rainfall**
 
   # Reading-in the rainfall data
   readings <- read.csv('data/readings.csv')
@@ -32,7 +32,7 @@ GetData <- function() {
 
 
 
-  # \strong{Stations}
+  # **Stations**
 
   # Reading in the stations data
   stations <- read.csv('data/stations.csv')
@@ -42,7 +42,7 @@ GetData <- function() {
 
 
 
-  # \strong{Return}
+  # **Return**
 
   # Do all stations in readings have a stations record
   if (!all(readings$stationID %in% stations$stationID)) {
