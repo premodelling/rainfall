@@ -3,23 +3,46 @@
 # Created by: Think
 # Created on: 02/11/2021
 
+
+#' Get Data
+#'
+#' Reads the (a) rainfall readings data file, and (b) the weather stations data file.  The
+#' rainfall readings were taken at the wether stations.
+#'
+#' @return A named list of 2 dataframes: (1) 'readings' = readings (2) 'stations' = stations
 GetData <- function() {
 
+  # \strong{Rainfall}
+
+  # Reading-in the rainfall data
+  readings <- read.csv('data/readings.csv')
+
+  # Months order
   levels_ <- c('January', 'February', 'March', 'April', 'May', 'June', 'July',
                'August', 'September', 'October', 'November', 'December')
 
-  # Rainfall readings
-  readings <- read.csv('data/readings.csv')
+  # Coverting the filed of month to factors, and defining the order of the factors
   readings$month <- factor(readings$month, levels = levels_)
+
+  # Creating a field of dates [string format]
   readings$textdate <- paste0(readings$year, '-', readings$month, '-', '01')
+
+  # Creating the Date format of date string <textdate>
   readings$date <- as.Date(readings$textdate, format = '%Y-%B-%d')
-  readings$month_code <- format(readings$date, format = '%m')
 
 
-  # Stations
+
+  # \strong{Stations}
+
+  # Reading in the stations data
   stations <- read.csv('data/stations.csv')
-  anyDuplicated(stations$stationID)
+  if (anyDuplicated(stations$stationID)) {
+    stop('The station codes are not unique')
+  }
 
+
+
+  # \strong{Return}
 
   # Do all stations in readings have a stations record
   if (!all(readings$stationID %in% stations$stationID)) {
