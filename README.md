@@ -19,6 +19,28 @@ The *Group B3 Rainfall Project* thus far:
 <br>
 <br>
 
+### Snippets
+
+**Ordering**
+```R
+dataframe %>%
+  arrange(fieldname)
+```
+or
+```
+dataframe[order(dataframe$fieldname), ]
+```
+
+
+**Extracting parts of a data**
+```
+# extract month code
+format(dataframe$date, format = '%m')
+```
+
+<br>
+<br>
+
 ### References
 
 **R**
