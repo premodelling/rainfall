@@ -31,8 +31,9 @@ or
 dataframe[order(dataframe$fieldname), ]
 ```
 
+<br>
 
-**Extracting parts of a data**
+**Extracting parts of a date**
 ```
 # extract month code
 format(dataframe$date, format = '%m')
