@@ -13,12 +13,11 @@
 #'         a month has had [across all years]
 #'
 RainfallAveragesReduce <- function (averages) {
-
-  # Wettest month
-  wettest <- averages %>%
+  
+  reduced <- averages %>%
     group_by(month) %>%
     summarise(mean = mean(mean_rainfall_month), .groups = 'drop')
 
-  return(wettest)
+  return(reduced)
 
 }
