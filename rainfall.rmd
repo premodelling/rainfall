@@ -10,10 +10,13 @@ output: pdf_document
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
+
 ```{r include = FALSE}
 library(tidyverse)
 library(ggplot2)
 ```
+
+
 ```{r include = FALSE}
 sys.source('R/functions/GetData.R', envir = knitr::knit_global())
 X <- GetData()
@@ -22,28 +25,25 @@ stations <- X$stations
 rm(X)
 ```
 
-### Data Aggregations
 
-1. Averages
 ```{r include = FALSE}
 sys.source('R/functions/RainfallAverages.R', envir = knitr::knit_global())
-averages <- RainfallAverages(data = readings)
+averages <- RainfallAverages(readings = readings)
 str(averages)
 ```
 
 
-2. The wettest by ...
 ```{r include = FALSE}
-sys.source('R/functions/RainfallWettest.R', envir = knitr::knit_global())
-wettest <- RainfallWettest(data = averages)
-wettest
+sys.source('R/functions/RainfallAveragesReduce.R', envir = knitr::knit_global())
+reduced <- RainfallAveragesReduce(averages = averages)
+str(reduced)
 ```
 
 
-3. Extremes
 ```{r include = FALSE}
 sys.source('R/functions/RainfallExtremes.R', envir = knitr::knit_global())
-extremes <- RainfallExtremes(data = readings)
+extremes <- RainfallExtremes(readings = readings)
+str(extremes)
 ```
 
 
@@ -69,7 +69,7 @@ ggplot(data = averages) +
 
 The bar graph
 ```{r}
-ggplot(data = wettest) +
+ggplot(data = reduced) +
   geom_bar(mapping = aes(x = month, y = mean), stat = 'identity') +
   theme_minimal() +
   theme(axis.text.x = element_text(size = 11, angle = 45),
@@ -89,7 +89,8 @@ ggplot(data = wettest) +
 The highest individual readings ...
 ```{r include = FALSE}
 sys.source('R/functions/HighestIndividualReadings.R', envir = knitr::knit_global())
-HighestIndividualReadings(readings = readings, stations = stations)
+hir <- HighestIndividualReadings(readings = readings, stations = stations)
+knitr::kable(hir, caption = "Highest Individual Readings")
 ```
 
 
