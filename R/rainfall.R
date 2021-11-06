@@ -3,7 +3,6 @@
 # Created by: Think
 # Created on: 02/11/2021
 
-
 # Get the rainfall readings & stations data
 source('R/functions/GetData.R')
 frames <- GetData()
@@ -12,22 +11,25 @@ stations <- frames$stations
 rm(frames)
 
 
-# The mean rainfall by date
+
+#' Part 1
+#' Data Integration
+
+# 1. The mean rainfall per month; each date is the first day of a month
 averages <- readings %>%
-  group_by(date, year, month, month_code) %>%
+  group_by(date, year, month) %>%
   summarise(mean_rainfall_month = mean(rain), .groups = 'drop')
+averages %>%
+  tibble()
 
+# 2. Mean rainfall by month [across all years]
+reduced <- averages %>%
+  group_by(month) %>%
+  summarise(mean = mean(mean_rainfall_month), .groups = 'drop')
+reduced %>%
+  tibble()
 
-# Wettest month
-# Instead of arrange ... wettest[order(wettest$month_code), ]
-wettest <- averages %>%
-  group_by(month, month_code) %>%
-  summarise(mean = mean(mean_rainfall_month), .groups = 'drop') %>%
-  arrange(month_code)
-
-
-
-# Inspecting extreme rain quantities per station
+# 3. Inspecting extreme rain quantities per station VIA total rainfall per station per year
 extremes <- readings %>%
   group_by(stationID, year) %>%
   summarise(total = sum(rain), .groups = 'drop')
@@ -35,15 +37,21 @@ extremes %>%
   tibble()
 
 
+
+#' Part 2
 #' Graphs
+
+# 1. A line graph of mean rainfall per month
 plot(x = averages$date, y = averages$mean_rainfall_month,
      type = 'l', frame.plot = FALSE, xlab = 'Date', ylab = 'Mean Rainfall per Month')
 
+# 2. A matrix graph of mean rainfall per month of each year
 ggplot(data = averages) +
   geom_raster(mapping = aes(x = year, y = month, fill = mean_rainfall_month )) +
   theme_minimal()
 
-ggplot(data = wettest) +
+# 3. A bar graph of the mean rainfall by month [across all years]
+ggplot(data = reduced) +
   geom_bar(mapping = aes(x = month, y = mean), stat = 'identity') +
   theme_minimal() +
   theme(axis.text.x = element_text(size = 11, angle = 45),
@@ -53,84 +61,28 @@ ggplot(data = wettest) +
   ylab(label = 'Mean Rainfall\n') +
   xlab(label = '')
 
-barplot(wettest$mean, names.arg = wettest$month, col = 'black', las = 2,
+barplot(reduced$mean, names.arg = reduced$month, col = 'black', las = 2,
         xlab = '\n', ylab = 'Average Rainfall', main = 'Wettest Month')
 
 
 
-
-
-#' Part 2
+#' Part 3
 #' Extreme Tables
 
 # Highest Individual Readings
-expanded <- left_join(x = readings, y = stations, by = 'stationID', keep = FALSE)
-expanded_ <- expanded[order(-expanded$rain), ]
-expanded_ %>%
+source('R/functions/HighestIndividualReadings.R')
+hir <- HighestIndividualReadings(readings = readings, stations = stations)
+hir %>%
   tibble()
-head(expanded_, n = 5)
 
-
-# H & L Annual Stations
-extremes_ <- left_join(x = extremes, y = stations[, c('stationID', 'name')], by = 'stationID', keep = FALSE)
-extremes_ <- extremes_[order(-extremes_$total), ]
-head(extremes_, n = 5)
-
-lowest_set <- tail(extremes_, n = 5) %>%
-  arrange(total)
-lowest_set
-
+# The records that have the highest & lowest annual rainfall records
+source('R/functions/HLAS.R')
+hlas <- HLAS(extremes = extremes, stations = stations)
+hlas$highest %>%
+  tibble()
+hlas$lowest %>%
+  tibble()
 
 # Wettest Month Records / Tallies
-# split - probably the best
-baseline <- readings %>%
-  group_by(year, month) %>%
-  summarise(total_rainfall = sum(rain), .groups = 'drop')
-
-ordered_baseline <- baseline[with(baseline, order(year, -total_rainfall)), ]
-
-indices <- !duplicated(ordered_baseline$year)
-wettest_months_per_year <- ordered_baseline[indices, ]
-
-wettest_months_per_year %>%
-  group_by(month) %>%
-  summarise(N = n())
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+source('R/functions/WettestMonthTallies.R')
+frequencies <- WettestMonthTallies(readings = readings)
