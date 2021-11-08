@@ -1,7 +1,6 @@
 ---
 title: "Rainfall Report"
 author: Group B3
-date: 02/11/2021
 output: pdf_document
 ---
 
@@ -50,32 +49,40 @@ str(extremes)
 
 ## Rainfall Graphs
 
-### Mean Rainfall $vs.$ Dates
+\vspace{10pt}
+
+### MEAN RAINFALL $vs.$ DATES
 
 The line graph of mean rainfall, per month, against dates during the years $1850$ to $1900$.
-```{r out.width = '55%', fig.align = 'center'}
+```{r out.width = '50%', fig.align = 'center'}
+
+graphics::par(mar = c(2, 6, 1, 2) )  # mar = c(bottom, left, top, right)
+
 plot(x = averages$date, y = averages$mean_rainfall_month,
      type = 'l', frame.plot = FALSE, xlab = 'Date', ylab = 'Mean Rainfall per Month')
 ```
 
-### A raster representation of mean rainfall
+### A RASTER REPRESENTATION OF MEAN RAINFALL
 
 A raster representation of mean rainfall per month every year; for the years $1850$ to $1900$.
 
 ```{r out.width = '65%', fig.align = 'center'}
+
+graphics::par(mar = c(1, 6, 1, 2) )  # mar = c(bottom, left, top, right)
+
 ggplot(data = averages) +
   geom_raster(mapping = aes(x = year, y = month, fill = mean_rainfall_month )) +
   theme_minimal()
 ```
 
-### Mean Rainfall per Month Across the Years
+### MEAN RAINFALL PER MONTH ACROSS THE YEARS
 
 Each bar represents the mean amount of rainfall that fell, during the named month, across the years 1850 to 1900.
 
 ```{r out.width = '65%', fig.align = 'center'}
 ggplot(data = reduced, mapping = aes(x = month, y = mean)) +
   geom_bar(stat = 'identity') +
-  geom_text(mapping = aes(label  = round(mean, digits = 1)), vjust = 0) +
+  geom_text(mapping = aes(label  = round(mean, digits = 1)), vjust = 0, nudge_y = 0.25) +
   theme_minimal() +
   theme(axis.text.x = element_text(size = 11, angle = 90),
         axis.text.y = element_text(face = "bold", size = 11),
@@ -90,45 +97,49 @@ ggplot(data = reduced, mapping = aes(x = month, y = mean)) +
 
 ## Extreme Tables
 
+\vspace{10pt}
 
-The highest individual readings ...
+### THE HIGHEST INDIVIDUAL READINGS
 ```{r include = FALSE}
 sys.source('R/functions/HighestIndividualReadings.R', envir = knitr::knit_global())
 hir <- HighestIndividualReadings(readings = readings, stations = stations)
-knitr::kable(hir, caption = "Highest Individual Readings", format = 'latex')
 ```
 
 
+```{r}
+knitr::kable(hir, caption = "Highest Individual Readings")
+```
 
-Highest and lowest annual station records
+
+\vspace{35pt}
+
+### THE HIGHEST & LOWEST ANNUAL STATION RECORDS
 ```{r include = FALSE}
 sys.source('R/functions/HLAS.R', envir = knitr::knit_global())
 hlas <- HLAS(extremes = extremes, stations = stations)
 ```
 
-Highest:
+
 ```{r}
-hlas$highest
+knitr::kable(x = hlas$highest, caption = 'Highest Annual Station Records')
 ```
 
-Lowest:
 ```{r}
-hlas$lowest
+knitr::kable(x = hlas$lowest, caption = 'Lowest Annual Station Records')
 ```
 
 
+\pagebreak
 
-Tally of the wettest months
+### THE WETTEST MONTH OF THE YEAR TALLIES
 
 ```{r include = FALSE}
 sys.source('R/functions/WettestMonthTallies.R', envir = knitr::knit_global())
-
+wmt <- WettestMonthTallies(readings = readings)
 ```
 
-
-Wettest:
 ```{r}
-WettestMonthTallies(readings = readings)
+knitr::kable(x = wmt, caption = 'Wettest Month Crown Tallies (1850 - 1900)', format = 'simple')
 ```
 
 
