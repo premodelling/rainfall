@@ -7,14 +7,15 @@
 
 <br>
 
-The *Group B3 Rainfall Project* thus far:
+The *Group B3 Rainfall Project*:
 
 * Within the parent directory
-  * a [rmarkdown based report](./rainfall.rmd) in development
+  * the [rmarkdown report](./rainfall.rmd)
+  * the resulting [pdf report](./rainfall.pdf)
   
 * Within directory [R](./R)
+  * a [directory of functions](./R/functions), which are used by the rmarkdown report
   * a [play area](./R/rainfall.R) were we explore ideas
-  * a [directory of functions](./R/functions), which are used by the rmarkdown report  
   
 <br>
 <br>
