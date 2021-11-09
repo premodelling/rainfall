@@ -1,8 +1,8 @@
 <br>
 
-### Independent Development Environments
+## Independent Development Environments
 
-**IntelliJ**
+### IntelliJ
 
 * Edit the help file skeletons in 'man', possibly combining help files
   for multiple functions.
@@ -16,14 +16,14 @@
 Read "Writing R Extensions" for more information.
 
 
-**R Studio**
+### R Studio
 
 Open this project via rainfall.Rproj
 
 <br>
 <br>
 
-### Snippets
+## Snippets
 
 **Ordering**
 ```R
