@@ -2,9 +2,6 @@
 
 ## Rainfall
 
-* [References](#references)
-* [Independent Development Environment](#independent-development-environments)
-
 <br>
 
 The *Group B3 Rainfall Project*:
@@ -20,35 +17,11 @@ The *Group B3 Rainfall Project*:
 <br>
 <br>
 
-### Snippets
-
-**Ordering**
-```R
-dataframe %>%
-  arrange(fieldname)
-```
-or
-```
-dataframe[order(dataframe$fieldname), ]
-```
-
-<br>
-
-**Extracting parts of a date**
-```
-# extract month code
-format(dataframe$date, format = '%m')
-```
-
-<br>
-<br>
-
 ### References
 
 **R**
 * [Tidyverse Style Guide](https://style.tidyverse.org/index.html)
 * [Reproducible Reports with R & R Markdown](https://claudiofronterre.github.io/reproduceR/reproduceR.html)
-
 
 <br>
 
@@ -80,19 +53,6 @@ format(dataframe$date, format = '%m')
 
 <br>
 <br>
+<br>
+<br>
 
-
-### Independent Development Environments
-
-**IntelliJ**
-
-* Edit the help file skeletons in 'man', possibly combining help files
-  for multiple functions.
-* Edit the exports in 'NAMESPACE', and add necessary imports.
-* Put any C/C++/Fortran code in 'src'.
-* If you have compiled code, add a useDynLib() directive to
-  'NAMESPACE'.
-* Run R CMD build to build the package tarball.
-* Run R CMD check to check the package tarball.
-
-Read "Writing R Extensions" for more information.
