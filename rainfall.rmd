@@ -1,7 +1,13 @@
 ---
 title: "Rainfall Report"
 author: Group B3
+urlcolor: red
+linkcolor: red
 output: pdf_document
+header-includes:
+   - \usepackage{color}
+   - \usepackage{caption}
+   - \captionsetup[figure]{font={small, color=gray}, width=.8\linewidth}
 ---
 
 
@@ -11,7 +17,7 @@ knitr::opts_chunk$set(echo = FALSE)
 
 
 ```{r include = FALSE}
-library(tidyverse)
+library(dplyr)
 library(ggplot2)
 ```
 
@@ -51,10 +57,8 @@ str(extremes)
 
 \vspace{10pt}
 
-### MEAN RAINFALL $vs.$ DATES
-
-The line graph of mean rainfall, per month, against dates during the years $1850$ to $1900$.
-```{r out.width = '50%', fig.align = 'center'}
+**Mean Rainfall**: The line graph of mean rainfall, per month, against dates during the years $1850$ to $1900$.
+```{r out.width = '45%', fig.align = 'center', fig.cap = 'Mean rainfall per month'}
 
 graphics::par(mar = c(2, 6, 1, 2) )  # mar = c(bottom, left, top, right)
 
@@ -62,11 +66,10 @@ plot(x = averages$date, y = averages$mean_rainfall_month,
      type = 'l', frame.plot = FALSE, xlab = 'Date', ylab = 'Mean Rainfall per Month')
 ```
 
-### A RASTER REPRESENTATION OF MEAN RAINFALL
+\vspace{20pt}
 
-A raster representation of mean rainfall per month every year; for the years $1850$ to $1900$.
-
-```{r out.width = '65%', fig.align = 'center'}
+**A Raster Representation of Mean Rainfall**: A raster representation of mean rainfall per month every year; for the years $1850$ to $1900$.
+```{r out.width = '60%', fig.align = 'center', fig.cap = 'A raster representation of mean rainfall'}
 
 graphics::par(mar = c(1, 6, 1, 2) )  # mar = c(bottom, left, top, right)
 
@@ -75,11 +78,10 @@ ggplot(data = averages) +
   theme_minimal()
 ```
 
-### MEAN RAINFALL PER MONTH ACROSS THE YEARS
+\pagebreak
 
-Each bar represents the mean amount of rainfall that fell, during the named month, across the years 1850 to 1900.
-
-```{r out.width = '65%', fig.align = 'center'}
+**The Mean Rainfall per Month Across the Years**: Each bar represents the mean amount of rainfall that fell, during the named month, across the years 1850 to 1900.
+```{r out.width = '60%', fig.align = 'center', fig.cap = 'The mean rainfall per month across the years.'}
 ggplot(data = reduced, mapping = aes(x = month, y = mean)) +
   geom_bar(stat = 'identity') +
   geom_text(mapping = aes(label  = round(mean, digits = 1)), vjust = 0, nudge_y = 0.25) +
@@ -99,50 +101,46 @@ ggplot(data = reduced, mapping = aes(x = month, y = mean)) +
 
 \vspace{10pt}
 
-### THE HIGHEST INDIVIDUAL READINGS
 ```{r include = FALSE}
 sys.source('R/functions/HighestIndividualReadings.R', envir = knitr::knit_global())
 hir <- HighestIndividualReadings(readings = readings, stations = stations)
+
+sys.source('R/functions/HLAS.R', envir = knitr::knit_global())
+hlas <- HLAS(extremes = extremes, stations = stations)
+
+sys.source('R/functions/WettestMonthTallies.R', envir = knitr::knit_global())
+wmt <- WettestMonthTallies(readings = readings)
 ```
 
+\footnotesize
 
 ```{r}
 knitr::kable(hir, caption = "Highest Individual Readings")
 ```
 
-
-\vspace{35pt}
-
-### THE HIGHEST & LOWEST ANNUAL STATION RECORDS
-```{r include = FALSE}
-sys.source('R/functions/HLAS.R', envir = knitr::knit_global())
-hlas <- HLAS(extremes = extremes, stations = stations)
-```
-
+\vspace{20pt}
 
 ```{r}
 knitr::kable(x = hlas$highest, caption = 'Highest Annual Station Records')
 ```
 
+\vspace{20pt}
+
 ```{r}
 knitr::kable(x = hlas$lowest, caption = 'Lowest Annual Station Records')
 ```
 
+\normalsize
 
-\pagebreak
+\vspace{20pt}
 
-### THE WETTEST MONTH OF THE YEAR TALLIES
-
-```{r include = FALSE}
-sys.source('R/functions/WettestMonthTallies.R', envir = knitr::knit_global())
-wmt <- WettestMonthTallies(readings = readings)
-```
+\footnotesize
 
 ```{r}
 knitr::kable(x = wmt, caption = 'Wettest Month Crown Tallies (1850 - 1900)', format = 'simple')
 ```
 
-
+\normalsize
 
 
 
