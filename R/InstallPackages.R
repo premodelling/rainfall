@@ -8,7 +8,8 @@ InstallPackages <- function (){
   # A list of packages
   #   docstrings: roxygen
   #   latex: latex2exp
-  packages <- c('data.table', 'tidyverse', 'ggplot2', 'roxygen2', 'latex2exp')
+  packages <- c('data.table', 'tidyverse', 'ggplot2', 'roxygen2', 'latex2exp', 'moments', 'rmarkdown', 'stringr',
+                'mapview', 'healthcareai', 'equatiomatic', 'rstatix')
 
   # Install
   .install <- function(x){
@@ -24,7 +25,7 @@ InstallPackages <- function (){
     library(x, character.only = TRUE)
     if (x == 'rmarkdown') {library(tinytex)}
   }
-  lapply(packages, .activate)
+  lapply(packages[!(packages %in% c('tidyverse', 'healthcareai', 'equatiomatic'))], .activate)
 
   # Active libraries
   sessionInfo()
