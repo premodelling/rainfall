@@ -5,19 +5,17 @@
 <br>
 
 The *Group B3 Rainfall Project*:
-
-* Within the parent directory
-  * the [rmarkdown report](./rainfall.rmd)
-  * the resulting [pdf report](./rainfall.pdf)
-  
+ 
 * Within directory [R](./R)
-  * a [directory of functions](./R/functions), which are used by the rmarkdown report
-  * a [play area](./R/rainfall.R) were we explore ideas
+  * A [directory of arithmetic functions](./R/functions); used by rainfall.R
+  * A [directory of graphing functions](./R/graphs); used by rainfall.R
+  * The [rainfall.R](./R/rainfall.R) script;  a script that draws a series of graphs, and outputs a set of 
+    tables, in answer to a few rainfall data related questions.  [Answers submission was via a brief PDF report]
   
 <br>
 <br>
 
-### References
+## References
 
 **R**
 * [Tidyverse Style Guide](https://style.tidyverse.org/index.html)
@@ -56,3 +54,7 @@ The *Group B3 Rainfall Project*:
 <br>
 <br>
 
+<br>
+<br>
+<br>
+<br>
