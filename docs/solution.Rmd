@@ -1,0 +1,183 @@
+---
+title: "Rainfall Data Reporting for `r params$region`"
+author: Barry Rowlingson
+output: pdf_document
+params:
+  datafolder: NA
+  region: NA
+---
+
+```{r note, eval=FALSE, echo=FALSE}
+Notes:
+
+    * This document should render without any extra packages other
+       than knitr, rmarkdown and ggplot2.
+    
+    * This document requires two parameters: the data folder and the region name:
+
+    render("reporting-report.Rmd", params=list(datafolder="./DATA/", region="Lancaster"))
+    
+```
+
+```{r init, echo=FALSE}
+## hide all code, attach packages
+knitr::opts_chunk$set(echo=FALSE)
+library(ggplot2)
+```
+
+
+```{r rrs}
+## read the data from the two files in the given
+## folder and return in a list
+read_readings_stations <- function(datapath){
+    
+### get the readings
+    readings = read.csv(file.path(datapath, "readings.csv"))
+### change the month to a factor
+    readings$month = factor(readings$month, levels=month.name)
+### contruct an ISO8601 year-month-day column
+    readings$ymd = paste0(readings$year,"-",readings$month,"-01")
+### convert to a Date object
+    readings$date = as.Date(readings$ymd, format="%Y-%B-%d")
+
+### Get the stations
+    stations = read.csv(file.path(datapath, "stations.csv"))
+    
+    return(
+        list(
+            readings=readings,
+            stations=stations
+        )
+    )
+}
+
+### read from the data folder passed as parameter
+data = read_readings_stations(params$datafolder)
+
+### break out into two objects for convenience
+readings = data$readings
+stations = data$stations    
+```
+
+
+```{r aggregations}
+### make some summary aggregation tables:
+
+## mean rainfall given a date
+date_mean = aggregate(rain~date, readings, mean, na.rm=TRUE)
+## fix the months as factors
+date_mean$month = factor(format(date_mean$date, "%B"), levels=month.name)
+## extract the year from the date
+date_mean$year = as.numeric(format(date_mean$date,"%Y"))
+
+## mean rain for each of the 12 calendar months
+month_mean = aggregate(rain~month, readings, mean)
+
+## total rainfall in each year measured by each station
+annual_station_total = aggregate(rain ~ stationID+year, readings, sum)
+```
+
+## Data Summary
+
+The data consists of `r nrow(readings)` rainfall records from 
+`r nrow(stations)` station locations. The data period is from `r min(readings$year)` to
+`r max(readings$year)`.
+
+## Rainfall Over Time
+
+The following plot shows the mean monthly rainfall for all stations
+reporting in a month.
+
+```{r plotdate}
+plot(rain~date, date_mean, ylab="inches",type="l")
+# or ggplot(date_mean,aes(x=date, y=rain)) + geom_line()
+```
+
+This plot shows the same data as in the previous plot, but as
+a grid with month on the Y axis and year on the X axis. Any seasonal
+difference between a dry and wet season should be more apparent.
+
+```{r plotmr, fig.height=2.4}
+## use a scale of increasing blue for wetness
+ggplot(date_mean, aes(x=year, y=month, fill=rain)) +
+    geom_raster() +
+    scale_fill_distiller(direction=1)
+```
+
+## Monthly Averages
+
+This graph shows the average over all stations and years for each
+calendar month.
+
+```{r plotmonth}
+## rotate the axis labels using `las=2`. Add the rainfall
+## measurement using `text`
+b = barplot(rain~month, month_mean,las=2,xlab="",axes=FALSE)
+text(b, 0.2, as.character(round(month_mean$rain,2)),cex=0.8)
+abline(h=0) # neatens it up
+axis(2) # scale on the left
+```
+
+## Maxima and Minima
+
+This table shows the five wettest months recorded at any station.
+
+```{r highest}
+## need names of the stations, so do a merge on the station ID
+full_data = merge(readings, stations, by="stationID")
+
+## sort the table by rain in decreasing order
+sortread = full_data[order(full_data$rain, decreasing=TRUE),]
+## take the top 5 and make a table with four columns in this
+## order
+top5 = sortread[1:5,]
+kable(top5[,c("name","month","year","rain")], row.names=FALSE)
+```
+
+## Wettest and Dryest Years
+
+The five wettest years as measured at a single station are shown
+in the next table.
+
+```{r wettestinayear}
+## merge the annual totals with the station data to get names
+full_annual = merge(annual_station_total, stations, by="stationID")
+## sort by name and do a table of the top 5
+sorted_annual = full_annual[order(full_annual$rain, decreasing=TRUE),]
+kable(sorted_annual[1:5, c("name","year","rain")], row.names=FALSE)
+```
+
+The five driest years at any station are in the next table. Low
+values may be due to missing month records at a station.
+
+```{r tailannual}
+## get the last 5 rows using `tail`, and reverse the order
+## so the lowest appears first
+lowest = tail(sorted_annual, 5)[,c("name","year","rain")][5:1,]
+kable(lowest, row.names=FALSE)
+```
+
+## Monthly Extremes
+
+```{r extremestat}
+## I want to say how many years of data we have in the text,
+## so I compute this:
+nyears = diff(range(readings$year))+1
+```
+
+In the `r nyears` years of the study data, each year appears as the 
+wettest year the following number of times:
+
+```{r wettest}
+rsort = date_mean[order(date_mean$rain, decreasing=TRUE),]
+wettest_month = rsort[!duplicated(rsort$year),]
+kable(table(month=wettest_month$month))
+```
+
+As a graph of proportions of the total number of years, the
+data looks like this:
+
+```{r wettable}
+barplot(table(wettest_month$month)/nyears,las=2)
+abline(h=0) # add a baseline
+```
